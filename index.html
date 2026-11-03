@@ -69,8 +69,8 @@
   .hero p.lede{font-size:19px;color:var(--muted);max-width:52ch}
   .hero-actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
 
-  .profile-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;box-shadow:0 30px 70px -40px rgba(25,40,110,.4)}
-  .profile-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;background:var(--accent-soft)}
+  .profile-card{width:100%;max-width:340px;justify-self:end;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;box-shadow:0 30px 70px -40px rgba(25,40,110,.4)}
+  .profile-card img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;background:var(--accent-soft)}
   .profile-meta{padding:16px 8px 6px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
   .profile-meta strong{display:block;font-size:18px;letter-spacing:-.01em}
   .profile-meta span{color:var(--muted);font-size:14px}
@@ -165,7 +165,7 @@
   @media (max-width:880px){
     .hero-grid,.about-grid,.stack-grid{grid-template-columns:1fr}
     .hero{padding:40px 0 64px}
-    .profile-card{max-width:380px}
+    .profile-card{max-width:260px;justify-self:start}
     .release{grid-template-columns:1fr;gap:12px}
     .release-side{padding-top:0;display:flex;gap:12px;align-items:center}
     .release-date{margin-top:0}
