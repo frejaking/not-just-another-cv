@@ -1,932 +1,476 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Freja King — Content Strategist</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freja King | B2B Marketer</title>
+<meta name="description" content="Freja King, B2B marketer in Stockholm. Events, content and sales enablement for complex products.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --coral: #BF264F;
-    --coral-light: #F7E4EA;
-    --ink: #1A1A1A;
-    --paper: #FFFDFB;
-    --cream: #FBF6F1;
-    --grey: #6B6660;
-    --line: #E8E1DA;
-    --serif: 'Fraunces', Georgia, serif;
-    --sans: 'Inter', -apple-system, sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--sans);
-    background: var(--paper);
-    color: var(--ink);
-    line-height: 1.6;
-  }
-
-  /* ===== GATE ===== */
-  #gate {
-    position: fixed;
-    inset: 0;
-    background: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-    overflow: hidden;
-  }
-
-  #gate.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .gate-blob {
-    position: absolute;
-    border-radius: 50%;
-    background: var(--coral);
-    opacity: 0.25;
-    filter: blur(60px);
-  }
-
-  .gate-blob.b1 { width: 500px; height: 500px; top: -150px; right: -150px; }
-  .gate-blob.b2 { width: 350px; height: 350px; bottom: -100px; left: -100px; opacity: 0.15; }
-
-  .gate-box {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 60px 40px;
-    max-width: 440px;
-    width: 90%;
-  }
-
-  .gate-eyebrow {
-    color: var(--coral);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 18px;
-  }
-
-  .gate-title {
-    font-family: var(--serif);
-    color: var(--paper);
-    font-size: 38px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    letter-spacing: -0.01em;
-  }
-
-  .gate-sub {
-    color: #B8B3AE;
-    font-size: 15px;
-    margin-bottom: 36px;
-    line-height: 1.6;
-  }
-
-  .gate-form {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  #code-input {
-    flex: 1;
-    min-width: 180px;
-    background: rgba(255,255,255,0.06);
-    border: 1.5px solid rgba(255,255,255,0.18);
-    border-radius: 100px;
-    padding: 15px 24px;
-    color: var(--paper);
-    font-size: 15px;
-    font-family: var(--sans);
-    text-align: center;
-    letter-spacing: 0.05em;
-    outline: none;
-    transition: border-color 0.2s ease, background 0.2s ease;
-  }
-
-  #code-input::placeholder { color: #807A74; }
-
-  #code-input:focus {
-    border-color: var(--coral);
-    background: rgba(255,255,255,0.1);
-  }
-
-  #gate-submit {
-    background: var(--coral);
-    color: var(--paper);
-    border: none;
-    border-radius: 100px;
-    padding: 15px 30px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: var(--sans);
-    cursor: pointer;
-    transition: transform 0.15s ease, background 0.2s ease;
-  }
-
-  #gate-submit:hover { background: #A31E42; transform: translateY(-1px); }
-  #gate-submit:active { transform: translateY(0); }
-
-  .gate-error {
-    color: var(--coral);
-    font-size: 13px;
-    margin-top: 16px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    min-height: 18px;
-  }
-
-  .gate-error.show { opacity: 1; }
-
-  .gate-hint {
-    margin-top: 28px;
-    font-size: 12px;
-    color: #6E6863;
-    letter-spacing: 0.04em;
-  }
-
-  /* ===== MAIN SITE ===== */
-  #site {
-    opacity: 0;
-    transition: opacity 0.7s ease;
-  }
-
-  #site.visible { opacity: 1; }
-
-  .container {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 32px;
-  }
-
-  /* ===== NAV ===== */
-  #site-nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(255, 253, 251, 0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .nav-inner {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 18px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .nav-logo {
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--ink);
-    text-decoration: none;
-    letter-spacing: -0.01em;
-  }
-
-  .nav-logo .coral { color: var(--coral); }
-
-  .nav-links {
-    display: flex;
-    gap: 32px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  .nav-links a:hover { color: var(--coral); }
-
-  .nav-toggle {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    width: 38px;
-    height: 38px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--paper);
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .nav-toggle span {
-    display: block;
-    width: 18px;
-    height: 2px;
-    background: var(--ink);
-    margin: 0 auto;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-  }
-
-  .nav-toggle.open span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-  }
-  .nav-toggle.open span:nth-child(2) {
-    opacity: 0;
-  }
-  .nav-toggle.open span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-  }
-
-  .nav-overlay {
-    display: none;
-  }
-
-  @media (max-width: 720px) {
-    .nav-links {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100vh;
-      width: 240px;
-      background: var(--paper);
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 28px;
-      padding: 0 40px;
-      box-shadow: -8px 0 32px rgba(0,0,0,0.06);
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      z-index: 60;
-    }
-
-    .nav-links.open {
-      transform: translateX(0);
-    }
-
-    .nav-links a {
-      font-size: 18px;
-    }
-
-    .nav-toggle {
-      display: flex;
-    }
-
-    .nav-overlay {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background: rgba(26,26,26,0.3);
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-      z-index: 55;
-    }
-
-    .nav-overlay.open {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
-
-  /* Decorative blobs */
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    z-index: -1;
-  }
-
-  /* HERO */
-  .hero {
-    position: relative;
-    padding: 90px 0 70px;
-    overflow: hidden;
-  }
-
-  .hero .blob.h1 {
-    width: 420px; height: 420px;
-    background: var(--coral-light);
-    top: -180px; right: -120px;
-  }
-
-  .hero .blob.h2 {
-    width: 180px; height: 180px;
-    background: var(--cream);
-    bottom: -60px; left: -60px;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 48px;
-    align-items: center;
-  }
-
-  .eyebrow {
-    color: var(--coral);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 18px;
-    display: block;
-  }
-
-  h1 {
-    font-family: var(--serif);
-    font-size: 64px;
-    font-weight: 600;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin-bottom: 14px;
-  }
-
-  .role-title {
-    font-size: 18px;
-    color: var(--grey);
-    font-weight: 500;
-    margin-bottom: 28px;
-    max-width: 480px;
-    line-height: 1.5;
-  }
-
-  .role-title strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .contact-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .contact-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--cream);
-    border: 1px solid var(--line);
-    border-radius: 100px;
-    padding: 8px 16px;
-    font-size: 13px;
-    color: var(--ink);
-    text-decoration: none;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
-
-  .contact-pill:hover {
-    background: var(--coral-light);
-    border-color: var(--coral);
-  }
-
-  .headshot-wrap {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid var(--paper);
-    box-shadow: 0 8px 32px rgba(191, 38, 79, 0.18);
-    flex-shrink: 0;
-  }
-
-  .headshot-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* SECTIONS */
-  section {
-    padding: 56px 0;
-    border-top: 1px solid var(--line);
-  }
-
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 32px;
-    gap: 24px;
-  }
-
-  h2 {
-    font-family: var(--serif);
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-
-  .section-tag {
-    font-size: 12px;
-    color: var(--grey);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  /* ABOUT */
-  .about-text {
-    font-size: 18px;
-    line-height: 1.75;
-    color: #3A3631;
-    max-width: 680px;
-  }
-
-  .about-text p { margin-bottom: 18px; }
-
-  .about-text p:last-child { margin-bottom: 0; }
-
-  /* EXPERIENCE */
-  .job {
-    margin-bottom: 40px;
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 32px;
-  }
-
-  .job:last-child { margin-bottom: 0; }
-
-  .job-meta {
-    position: sticky;
-    top: 24px;
-  }
-
-  .job-period {
-    font-size: 12px;
-    color: var(--coral);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .job-company {
-    font-family: var(--serif);
-    font-size: 19px;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  .job-list {
-    list-style: none;
-  }
-
-  .job-list li {
-    position: relative;
-    padding-left: 22px;
-    margin-bottom: 12px;
-    font-size: 15.5px;
-    color: #3A3631;
-    line-height: 1.65;
-  }
-
-  .job-list li:last-child { margin-bottom: 0; }
-
-  .job-list li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 9px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--coral-light);
-    border: 1.5px solid var(--coral);
-  }
-
-  /* SKILLS */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-
-  .skill-group h3 {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 14px;
-  }
-
-  .tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .tag {
-    background: var(--cream);
-    border: 1px solid var(--line);
-    border-radius: 100px;
-    padding: 7px 14px;
-    font-size: 13px;
-    color: #3A3631;
-  }
-
-  .tag.accent {
-    background: var(--coral-light);
-    border-color: transparent;
-    color: var(--coral);
-    font-weight: 600;
-  }
-
-  .skills-full {
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-  }
-
-  /* EDUCATION */
-  .edu-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 32px;
-    margin-bottom: 28px;
-  }
-
-  .edu-item:last-child { margin-bottom: 0; }
-
-  .edu-period {
-    font-size: 12px;
-    color: var(--coral);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .edu-school {
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-
-  .edu-desc {
-    font-size: 15px;
-    color: var(--grey);
-  }
-
-  /* FOOTER */
-  footer {
-    padding: 60px 0 50px;
-    text-align: center;
-    border-top: 1px solid var(--line);
-  }
-
-  .footer-line {
-    font-family: var(--serif);
-    font-size: 22px;
-    margin-bottom: 8px;
-  }
-
-  .footer-line .coral { color: var(--coral); }
-
-  .footer-sub {
-    font-size: 13px;
-    color: var(--grey);
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 720px) {
-    h1 { font-size: 44px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
-    .headshot-wrap { width: 150px; height: 150px; order: -1; }
-    .job, .edu-item { grid-template-columns: 1fr; gap: 8px; }
-    .job-meta { position: static; }
-    .skills-grid { grid-template-columns: 1fr; gap: 24px; }
-    .container { padding: 0 24px; }
-    h2 { font-size: 24px; }
-    .about-text { font-size: 16px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; scroll-behavior: auto !important; }
-  }
-
-  /* Focus visibility */
-  a:focus-visible, button:focus-visible, input:focus-visible {
-    outline: 2px solid var(--coral);
-    outline-offset: 2px;
+  :root{
+    --bg:#F4F6F9;
+    --surface:#FFFFFF;
+    --ink:#121621;
+    --muted:#5C6475;
+    --line:#E3E7EE;
+    --accent:#3355FF;
+    --accent-soft:#E8EDFF;
+    --radius-lg:20px;
+    --radius-sm:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Geist",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- Gate ---------- */
+  #gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;
+    background:radial-gradient(1200px 600px at 50% -10%, #DDE4FF 0%, var(--bg) 60%)}
+  .gate-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:40px 32px;box-shadow:0 24px 60px -30px rgba(25,40,110,.35)}
+  .logo{font-weight:700;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+  .logo-mark{width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px}
+  .gate-card h1{font-size:26px;letter-spacing:-.02em;margin:28px 0 6px;line-height:1.2}
+  .gate-card p{color:var(--muted);font-size:15px}
+  .gate-card label{display:block;font-size:14px;font-weight:500;margin:24px 0 8px}
+  .gate-card input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg)}
+  .gate-card input:focus{outline:none;border-color:var(--accent);background:#fff}
+  .gate-error{color:#C0392B;font-size:14px;min-height:22px;margin-top:8px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:500;font-size:16px;border:0;cursor:pointer;text-decoration:none;border-radius:999px;padding:12px 22px;transition:background .15s}
+  .btn-primary{background:var(--ink);color:#fff}
+  .btn-primary:hover{background:#2A3142}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{background:var(--surface)}
+  .gate-card .btn{width:100%;margin-top:4px}
+  .gate-hint{margin-top:20px;font-size:13px;color:var(--muted);text-align:center}
+  .gate-hint button{background:none;border:0;font:inherit;color:var(--accent);cursor:pointer;text-decoration:underline}
+  body.locked{overflow:hidden}
+  #gate.leaving{animation:gateOut .5s ease forwards}
+  @keyframes gateOut{to{opacity:0;visibility:hidden}}
+
+  /* ---------- Nav ---------- */
+  nav{position:sticky;top:0;z-index:10;background:rgba(244,246,249,.85);backdrop-filter:blur(10px);border-bottom:1px solid transparent}
+  nav.scrolled{border-color:var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .nav-links{display:flex;gap:28px;font-size:15px}
+  .nav-links a{text-decoration:none;color:var(--muted)}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{padding:9px 18px;font-size:15px}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:72px 0 88px}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+  .status{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:6px 14px 6px 10px;border-radius:999px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#1DB954;box-shadow:0 0 0 4px rgba(29,185,84,.15)}
+  .hero h1{font-size:clamp(40px,6vw,68px);line-height:1.04;letter-spacing:-.035em;font-weight:600;margin:22px 0 22px;max-width:12ch}
+  .hero p.lede{font-size:19px;color:var(--muted);max-width:52ch}
+  .hero-actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
+
+  .profile-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;box-shadow:0 30px 70px -40px rgba(25,40,110,.4)}
+  .profile-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;background:var(--accent-soft)}
+  .profile-meta{padding:16px 8px 6px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+  .profile-meta strong{display:block;font-size:18px;letter-spacing:-.01em}
+  .profile-meta span{color:var(--muted);font-size:14px}
+  .tag{font-size:13px;background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:999px;white-space:nowrap;font-weight:500}
+
+  /* ---------- Sections ---------- */
+  section{padding:88px 0}
+  .section-head{max-width:640px;margin-bottom:48px}
+  .section-head h2{font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;line-height:1.1;font-weight:600}
+  .section-head p{color:var(--muted);margin-top:14px;font-size:18px}
+
+  /* About */
+  .about{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  .about-text p{font-size:20px;line-height:1.55;letter-spacing:-.01em}
+  .about-text p + p{margin-top:20px;color:var(--muted);font-size:18px}
+  .what-list{list-style:none;display:grid;gap:0;border-top:1px solid var(--line)}
+  .what-list li{padding:18px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:180px 1fr;gap:16px}
+  .what-list strong{font-weight:600}
+  .what-list span{color:var(--muted)}
+
+  /* Changelog */
+  .changelog{position:relative;display:grid;gap:20px}
+  .release{display:grid;grid-template-columns:200px 1fr;gap:32px;position:relative}
+  .release-side{padding-top:28px}
+  .version{display:inline-block;font-weight:600;font-size:14px;background:var(--ink);color:#fff;padding:3px 10px;border-radius:6px}
+  .release.current .version{background:var(--accent)}
+  .release-date{display:block;color:var(--muted);font-size:14px;margin-top:10px}
+  .release-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:28px 32px}
+  .release-card h3{font-size:22px;letter-spacing:-.02em;font-weight:600}
+  .release-card .role{color:var(--muted);font-size:15px;margin-top:2px}
+  .release-card ul{list-style:none;margin-top:18px;display:grid;gap:10px}
+  .release-card li{padding-left:22px;position:relative}
+  .release-card li::before{content:"";position:absolute;left:2px;top:.68em;width:8px;height:8px;border-radius:2px;background:var(--accent-soft);border:1.5px solid var(--accent)}
+  .release-card .note{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line);font-size:15px;color:var(--muted)}
+
+  /* Stack */
+  .stack{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:15px;font-weight:500}
+  .chip.ai{border-color:#C9D3FF;background:var(--accent-soft);color:#2238B8}
+  .stack-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .stack-grid h3{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--muted)}
+  .langs{display:grid;gap:10px}
+  .lang{display:flex;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 16px;font-size:15px}
+  .lang span{color:var(--muted)}
+
+  /* Education */
+  .edu{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .edu-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:22px}
+  .edu-item strong{display:block;font-size:17px}
+  .edu-item .when{color:var(--muted);font-size:14px;margin:2px 0 10px;display:block}
+  .edu-item p{font-size:15px;color:var(--muted)}
+
+  /* FAQ */
+  .faq{max-width:760px}
+  details{border-bottom:1px solid var(--line)}
+  details:first-child{border-top:1px solid var(--line)}
+  summary{list-style:none;cursor:pointer;padding:22px 0;font-size:18px;font-weight:500;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary .plus{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:transform .2s}
+  details[open] summary .plus{transform:rotate(45deg)}
+  details p{padding:0 0 22px;color:var(--muted);max-width:62ch}
+
+  /* CTA */
+  .cta-band{background:var(--ink);color:#fff;border-radius:28px;padding:64px 56px;display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;
+    background-image:radial-gradient(700px 300px at 100% 0%, rgba(51,85,255,.45), transparent 70%)}
+  .cta-band h2{font-size:clamp(30px,4vw,44px);letter-spacing:-.03em;line-height:1.1;font-weight:600;max-width:16ch}
+  .cta-band p{color:#B9C0D0;margin-top:10px}
+  .cta-actions{display:flex;gap:12px;flex-wrap:wrap}
+  .btn-light{background:#fff;color:var(--ink)}
+  .btn-light:hover{background:#E8EDFF}
+  .btn-outline-light{border:1px solid rgba(255,255,255,.3);color:#fff;background:transparent}
+  .btn-outline-light:hover{background:rgba(255,255,255,.08)}
+
+  footer{padding:40px 0 56px;color:var(--muted);font-size:14px}
+  .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  /* Hero load moment */
+  .reveal{opacity:0;transform:translateY(14px)}
+  body.unlocked .reveal{animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  body.unlocked .reveal.d2{animation-delay:.08s}
+  body.unlocked .reveal.d3{animation-delay:.16s}
+  body.unlocked .reveal.d4{animation-delay:.24s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+
+  @media (max-width:880px){
+    .hero-grid,.about-grid,.stack-grid{grid-template-columns:1fr}
+    .hero{padding:40px 0 64px}
+    .profile-card{max-width:380px}
+    .release{grid-template-columns:1fr;gap:12px}
+    .release-side{padding-top:0;display:flex;gap:12px;align-items:center}
+    .release-date{margin-top:0}
+    .edu{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .what-list li{grid-template-columns:1fr;gap:2px}
+    section{padding:64px 0}
+    .cta-band{padding:44px 28px}
+    .release-card{padding:24px}
   }
 </style>
 </head>
-<body>
+<body class="locked">
 
-<!-- GATE -->
-<div id="gate">
-  <div class="gate-blob b1"></div>
-  <div class="gate-blob b2"></div>
-  <div class="gate-box">
-    <span class="gate-eyebrow">Private CV</span>
-    <h1 class="gate-title">Hi, I'm Freja.</h1>
-    <p class="gate-sub">This page is just for you. Enter the access code to take a look.</p>
-    <form class="gate-form" id="gate-form" autocomplete="off">
-      <input type="text" id="code-input" placeholder="Access code" aria-label="Access code">
-      <button type="submit" id="gate-submit">Unlock</button>
-    </form>
-    <p class="gate-error" id="gate-error">Not quite — try again.</p>
-    <p class="gate-hint">Hint: it's exactly what I'm hoping you'll do.</p>
-  </div>
+<!-- ================= Gate ================= -->
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <form class="gate-card" id="gate-form" autocomplete="off">
+    <div class="logo"><span class="logo-mark">FK</span> Freja King</div>
+    <h1 id="gate-title">Welcome back</h1>
+    <p>Enter the access code from my CV to continue.</p>
+    <label for="code">Access code</label>
+    <input id="code" name="code" type="text" placeholder="Enter code" spellcheck="false" autocapitalize="off">
+    <div class="gate-error" id="gate-error" aria-live="polite"></div>
+    <button class="btn btn-primary" type="submit">Log in</button>
+    <p class="gate-hint">Lost the code? <button type="button" id="hint">Show me</button></p>
+  </form>
 </div>
 
-<!-- SITE -->
-<div id="site">
-
-  <nav id="site-nav">
-    <div class="nav-inner">
-      <a href="#top" class="nav-logo">Freja <span class="coral">King</span></a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#education">Education</a></li>
-        <li><a href="#achievements">Achievements</a></li>
-      </ul>
+<!-- ================= Nav ================= -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="logo" style="text-decoration:none"><span class="logo-mark">FK</span> Freja King</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#changelog">Experience</a>
+      <a href="#stack">Skills</a>
+      <a href="#faq">FAQ</a>
     </div>
-  </nav>
-  <div class="nav-overlay" id="nav-overlay"></div>
-
-  <div class="container">
-    <section class="hero" id="top" style="border-top: none; padding-top: 50px;">
-      <div class="blob h1"></div>
-      <div class="blob h2"></div>
-      <div class="hero-grid">
-        <div>
-          <span class="eyebrow">Marketing · Content Strategy</span>
-          <h1>Freja King</h1>
-          <p class="role-title">Marketing specialist with a passion for <strong>content strategy &amp; brand activation</strong> — applying for <strong>Content Strategist</strong> at Voyado.</p>
-          <div class="contact-row">
-            <a class="contact-pill" href="mailto:frejaking@outlook.com">frejaking@outlook.com</a>
-            <a class="contact-pill" href="tel:+46700951880">+46 70 095 18 80</a>
-            <a class="contact-pill" href="https://www.linkedin.com/in/frejja-king/" target="_blank" rel="noopener">LinkedIn</a>
-            <span class="contact-pill" style="cursor:default;">Stockholm</span>
-          </div>
-        </div>
-        <div class="headshot-wrap">
-          <img src="images/headshot.jpg" alt="Portrait of Freja King">
-        </div>
-      </div>
-    </section>
-
-    <section id="about">
-      <div class="section-head">
-        <h2>About</h2>
-        <span class="section-tag">The short version</span>
-      </div>
-      <div class="about-text">
-        <p>I'm a curious and creative marketing professional who loves turning complex ideas into content that connects, especially when there's a SaaS product or data-heavy story behind it. I enjoy translating that complexity into something clear, engaging, and genuinely useful for the people reading it, and I'm always looking for ways AI can make that process smarter and more scalable.</p>
-        <p>My background in competitive sailing has shaped how I work: focused, adaptable, and calm under pressure. Whether on the water or in a fast-paced marketing team, I'm always driven by challenge.</p>
-      </div>
-    </section>
-
-    <section id="experience">
-      <div class="section-head">
-        <h2>Experience</h2>
-        <span class="section-tag">Work history</span>
-      </div>
-
-      <div class="job">
-        <div class="job-meta">
-          <div class="job-period">April 2026 — Current</div>
-          <div class="job-company">Content Marketing Specialist<br>BrightAnalytics</div>
-        </div>
-        <ul class="job-list">
-          <li>Plan and own company-driven events end-to-end, from website page creation to engaging, on-brand sales materials for the sales team.</li>
-          <li>Create on-brand social content with a Nordic perspective that translates across European markets.</li>
-          <li>Communicate product and finance-heavy information in a way that's digestible and engaging for prospects and customers, turning complexity into clear value.</li>
-          <li>Started implementing clearer goals, KPIs, and content pillars to bring more strategy and structure to our content approach.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="job-meta">
-          <div class="job-period">June 2023 — April 2026</div>
-          <div class="job-company">Marketing Specialist<br>Avinode Group</div>
-        </div>
-        <ul class="job-list">
-          <li>Created engaging, on-brand, and SEO-friendly social media content, while also planning, posting, and refining our social presence to bring more structure, consistency, and impact to the digital strategy.</li>
-          <li>Shaped Avinode Group's brand voice and visual identity across email campaigns, internal branding, and sales materials, collaborating closely with the sales team to deliver one-pagers and decks.</li>
-          <li>Reported and analyzed data points around share of search, PR &amp; influencer mentions, and social media performance to track impact, guide content, and inform wider marketing strategy.</li>
-          <li>Led development of an internal brand portal for 170+ employees worldwide, ensuring consistent, on-brand communication.</li>
-          <li>Contributed to internal and external activation initiatives that strengthened engagement with both customers and employees.</li>
-          <li>Helped drive a social selling initiative as part of a broader go-to-market strategy.</li>
-          <li>Explored the use of AI tools to enhance content creation and workflow efficiency within the marketing team, and later presented these findings to the entire company.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="job-meta">
-          <div class="job-period">October 2022</div>
-          <div class="job-company">Social Media Manager<br>STS Camp Barcelona</div>
-        </div>
-        <ul class="job-list">
-          <li>Managed social media for an international language camp, creating content that boosted visibility and student engagement.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="skills">
-      <div class="section-head">
-        <h2>Skills</h2>
-        <span class="section-tag">Tools &amp; ways of working</span>
-      </div>
-
-      <div class="skills-grid">
-        <div class="skill-group">
-          <h3>Practical</h3>
-          <div class="tag-cloud">
-            <span class="tag accent">Content Strategy</span>
-            <span class="tag">Organic Social Media Marketing</span>
-            <span class="tag">SaaS</span>
-            <span class="tag">Content Creation &amp; Copywriting</span>
-            <span class="tag">Branding &amp; Brand Voice Development</span>
-            <span class="tag">SEO for Social &amp; Web</span>
-            <span class="tag">Email Marketing</span>
-            <span class="tag">Social Media Strategy</span>
-            <span class="tag">Event Marketing</span>
-            <span class="tag">Strategic Thinking &amp; Initiative</span>
-            <span class="tag">Bilingual (Swedish &amp; English)</span>
-            <span class="tag">Spanish (B1)</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <h3>Technical</h3>
-          <div class="tag-cloud">
-            <span class="tag">Canva</span>
-            <span class="tag">Figma</span>
-            <span class="tag">Meta Business Suite</span>
-            <span class="tag">Asana</span>
-            <span class="tag">Confluence</span>
-            <span class="tag">Adobe</span>
-            <span class="tag">Miro</span>
-            <span class="tag">Microsoft Dynamics CRM</span>
-            <span class="tag">MyTelescope</span>
-            <span class="tag">Meltwater</span>
-            <span class="tag">WordPress</span>
-            <span class="tag">HubSpot</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="skills-full">
-        <h3 style="font-size:13px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--grey); margin-bottom:14px;">Certifications</h3>
-        <div class="tag-cloud">
-          <span class="tag">Digital Marketing Certified — HubSpot Academy</span>
-          <span class="tag">Certified Workflow Specialist — Asana</span>
-        </div>
-      </div>
-
-      <div class="skills-full">
-        <h3 style="font-size:13px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--grey); margin-bottom:14px;">Languages</h3>
-        <div class="tag-cloud">
-          <span class="tag accent">Swedish — Native</span>
-          <span class="tag accent">English — Native</span>
-          <span class="tag">Spanish — B1</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="education">
-      <div class="section-head">
-        <h2>Education</h2>
-        <span class="section-tag">Background</span>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-period">Jan 2022 — Jan 2025</div>
-        <div>
-          <div class="edu-school">Lund University</div>
-          <div class="edu-desc">Bachelor of Business Administration and Economics, specialization in marketing.</div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-period">Spring 2024</div>
-        <div>
-          <div class="edu-school">Comillas Pontifical University</div>
-          <div class="edu-desc">Exchange semester — Spanish history, leadership &amp; change management, and consumer behavior.</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="achievements">
-      <div class="section-head">
-        <h2>Achievements</h2>
-        <span class="section-tag">Beyond the day job</span>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-period">Sailing</div>
-        <div>
-          <div class="edu-school">Competitive Sailing — Optimist &amp; Laser</div>
-          <div class="edu-desc">Ranked top 10 among women in Sweden in both Optimist and Laser classes, and competed for the Swedish National Team.</div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-period">UF Företag</div>
-        <div>
-          <div class="edu-school">Beelieve</div>
-          <div class="edu-desc">Best UF company in Västra Götaland and 3rd nationally in Sweden.</div>
-        </div>
-      </div>
-
-      <div class="edu-item">
-        <div class="edu-period">Lund University</div>
-        <div>
-          <div class="edu-school">Pitch Competition Winner</div>
-          <div class="edu-desc">Won a pitch competition with a new tagline and product concept for Läkerol. <a href="https://www.linkedin.com/posts/frejja-king_teori-m%C3%B6ter-praktik-p%C3%A5-b%C3%A4sta-s%C3%A4tt-som-activity-7261831982647545856-vLIb?utm_source=share&amp;utm_medium=member_desktop&amp;rcm=ACoAADHqRUsB2Z6AO26cWHkfOGUiljRWzr7ZcPs" target="_blank" rel="noopener" style="color: var(--coral); font-weight: 600;">See the LinkedIn post →</a></div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <div class="footer-line">Thanks for stopping <span class="coral">by</span>.</div>
-      <div class="footer-sub">Built (and gated) by Freja — with a little help from AI.</div>
-    </footer>
+    <a class="btn btn-primary nav-cta" href="mailto:frejaking@outlook.com?subject=Coffee%3F">Book a coffee</a>
   </div>
+</nav>
 
-</div>
+<main id="top">
+
+<!-- ================= Hero ================= -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="status reveal"><span class="dot"></span> Open to new roles in Stockholm</span>
+      <h1 class="reveal d2">I make complicated things simple.</h1>
+      <p class="lede reveal d3">B2B marketer in Stockholm. Currently making finance software interesting. Previously, private jets.</p>
+      <div class="hero-actions reveal d4">
+        <a class="btn btn-primary" href="#contact">Get in touch</a>
+        <a class="btn btn-ghost" href="#changelog">See the changelog</a>
+      </div>
+    </div>
+    <div class="profile-card reveal d3">
+      <img src="freja.jpg" alt="Portrait of Freja King" width="326" height="333">
+      <div class="profile-meta">
+        <div><strong>Freja King</strong><span>Content Marketing Specialist</span></div>
+        <span class="tag">Stockholm</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= About ================= -->
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-text">
+      <p>In B2B SaaS, simple has meant finance reporting, private aviation software and everything in between, turned into content, events and material sales teams want to use.</p>
+      <p>AI is a big part of how I work, and I'm always testing new ways to use it. This site is one of those tests. Before marketing, I spent years racing sailboats. It taught me to read conditions fast and adjust without overthinking.</p>
+    </div>
+    <ul class="what-list">
+      <li><strong>Events</strong><span>Planned and run end to end, from the event page to the sales follow-up material.</span></li>
+      <li><strong>Content &amp; social</strong><span>LinkedIn and web content for CEOs, CFOs and operators across European markets.</span></li>
+      <li><strong>Copywriting</strong><span>Website pages, presentations, press releases, blog posts and LinkedIn.</span></li>
+      <li><strong>Sales enablement</strong><span>One-pagers, decks and social selling, built side by side with sales.</span></li>
+      <li><strong>Measurement</strong><span>Share of search, PR mentions and KPIs, so we know what's actually working.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= Changelog ================= -->
+<section id="changelog">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Changelog</h2>
+      <p>Every good product ships updates. Here are mine.</p>
+    </div>
+
+    <div class="changelog">
+      <article class="release current">
+        <div class="release-side"><span class="version">v3.0</span><span class="release-date">April 2026 to now</span></div>
+        <div class="release-card">
+          <h3>BrightAnalytics</h3>
+          <p class="role">Content Marketing Specialist</p>
+          <ul>
+            <li>Plan and own company events end to end, from the website page to on-brand materials for the sales team.</li>
+            <li>Create LinkedIn and social content with a Nordic perspective that works across European markets.</li>
+            <li>Turn finance-heavy topics like IFRS 18 into content CEOs and CFOs actually read.</li>
+            <li>Introduced clearer goals, KPIs and content pillars to bring structure to our content approach.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="release">
+        <div class="release-side"><span class="version">v2.0</span><span class="release-date">June 2023 to April 2026</span></div>
+        <div class="release-card">
+          <h3>Avinode Group</h3>
+          <p class="role">Marketing Specialist</p>
+          <ul>
+            <li>Built one-pagers, decks and email campaigns with the sales team, and helped drive a social selling initiative.</li>
+            <li>Planned, wrote and published social content, bringing structure and consistency to the channel.</li>
+            <li>Tracked share of search, PR and influencer mentions and social performance to steer content and strategy.</li>
+            <li>Led an internal brand portal for 170+ employees worldwide.</li>
+            <li>Tested AI tools for content and workflow efficiency, and presented the findings to the whole company.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="release">
+        <div class="release-side"><span class="version">v1.1</span><span class="release-date">October 2022</span></div>
+        <div class="release-card">
+          <h3>STS Camp Barcelona</h3>
+          <p class="role">Social Media Manager</p>
+          <ul>
+            <li>Managed social media for an international language camp, creating content that boosted visibility and student engagement.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="release">
+        <div class="release-side"><span class="version">v1.0</span><span class="release-date">The first release</span></div>
+        <div class="release-card">
+          <h3>Beelieve</h3>
+          <p class="role">Co-founder, UF company</p>
+          <ul>
+            <li>Co-founded a hive-share model for beekeepers.</li>
+            <li>Placed best in Västra Götaland and 3rd in Sweden.</li>
+          </ul>
+          <p class="note">Where I learned that a good idea is only half the job. The other half is getting people to care.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Stack ================= -->
+<section id="stack" style="padding-top:24px">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Fits the stack you already run</h2>
+      <p>The skills and tools I work with every week.</p>
+    </div>
+    <div class="stack-grid">
+      <div>
+        <h3>Skills</h3>
+        <div class="stack">
+          <span class="chip">Event marketing</span>
+          <span class="chip">LinkedIn &amp; social</span>
+          <span class="chip">Copywriting</span>
+          <span class="chip">Sales enablement</span>
+          <span class="chip">Brand voice</span>
+          <span class="chip">SEO</span>
+          <span class="chip">Email marketing</span>
+          <span class="chip">Reporting &amp; analysis</span>
+        </div>
+        <h3 style="margin-top:36px">Tools</h3>
+        <div class="stack">
+          <span class="chip">HubSpot</span>
+          <span class="chip">Canva</span>
+          <span class="chip">Figma</span>
+          <span class="chip">Adobe</span>
+          <span class="chip">Miro</span>
+          <span class="chip">WordPress</span>
+          <span class="chip">Meltwater</span>
+          <span class="chip">MyTelescope</span>
+          <span class="chip ai">Lovable</span>
+          <span class="chip ai">GitHub</span>
+          <span class="chip ai">Pen.dev</span>
+        </div>
+      </div>
+      <div>
+        <h3>Languages</h3>
+        <div class="langs">
+          <div class="lang">English <span>Fluent</span></div>
+          <div class="lang">Swedish <span>Native</span></div>
+          <div class="lang">Spanish <span>B1</span></div>
+        </div>
+        <h3 style="margin-top:36px">Certifications</h3>
+        <div class="langs">
+          <div class="lang">Digital Marketing <span>HubSpot Academy</span></div>
+          <div class="lang">Workflow Specialist <span>Asana</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Education ================= -->
+<section style="padding-top:24px">
+  <div class="wrap">
+    <div class="section-head"><h2>Education</h2></div>
+    <div class="edu">
+      <div class="edu-item">
+        <strong>Lund University</strong><span class="when">2022 to 2025</span>
+        <p>Bachelor of Business Administration and Economics, specializing in marketing.</p>
+      </div>
+      <div class="edu-item">
+        <strong>Comillas Pontifical University</strong><span class="when">Spring 2024</span>
+        <p>Exchange semester in Madrid: leadership and change management, consumer behavior, Spanish history.</p>
+      </div>
+      <div class="edu-item">
+        <strong>On the water</strong><span class="when">Years of it</span>
+        <p>Competitive sailing. The best training I've had for staying calm when conditions change.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq" style="padding-top:24px">
+  <div class="wrap">
+    <div class="section-head"><h2>Frequently asked questions</h2></div>
+    <div class="faq">
+      <details>
+        <summary>What kind of role are you looking for? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>A hands-on marketing role at an AI company or startup in Stockholm, where I can own real work from day one: events, content, social and the material sales teams use.</p>
+      </details>
+      <details>
+        <summary>Did you build this site yourself? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>Yes, with a lot of help from AI. I'm not a developer, but I like figuring out how far you can get with the right tools and some curiosity.</p>
+      </details>
+      <details>
+        <summary>Do you work in English or Swedish? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>Both. Most of my work for the last three years has been in English for European and global audiences.</p>
+      </details>
+      <details>
+        <summary>What does Freja bring to the table outside of marketing? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>I'm always up for discussing the best British pubs in Stockholm, swapping book tips and recommending far too many podcasts. I'm also trying to figure out how to run a half marathon, so advice is welcome.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section id="contact" style="padding-top:24px">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <h2>Have a role that fits?</h2>
+        <p>Stockholm based. Happy to meet for coffee.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn btn-light" href="mailto:frejaking@outlook.com?subject=Coffee%3F">Book a coffee</a>
+        <a class="btn btn-outline-light" href="https://www.linkedin.com/in/frejja-king/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>Freja King · Stockholm</span>
+    <span><a href="mailto:frejaking@outlook.com">frejaking@outlook.com</a> &nbsp;|&nbsp; <a href="tel:+46700951880">+46 70 095 18 80</a></span>
+  </div>
+</footer>
 
 <script>
-  const CODE = "hireme";
-  const gate = document.getElementById('gate');
-  const site = document.getElementById('site');
-  const form = document.getElementById('gate-form');
-  const input = document.getElementById('code-input');
-  const error = document.getElementById('gate-error');
+(function(){
+  var CODE = "hireme";
+  var KEY = "fk-unlocked";
+  var gate = document.getElementById("gate");
+  var form = document.getElementById("gate-form");
+  var input = document.getElementById("code");
+  var err = document.getElementById("gate-error");
 
-  // Check session storage so reloads within the session stay unlocked
-  if (sessionStorage && sessionStorage.getItem('fk-unlocked') === 'true') {
-    unlock();
+  function unlock(animate){
+    document.body.classList.remove("locked");
+    document.body.classList.add("unlocked");
+    if(animate){ gate.classList.add("leaving"); setTimeout(function(){ gate.remove(); }, 500); }
+    else { gate.remove(); }
+    try{ sessionStorage.setItem(KEY,"1"); }catch(e){}
   }
 
-  form.addEventListener('submit', function(e) {
+  var already = false;
+  try{ already = sessionStorage.getItem(KEY) === "1"; }catch(e){}
+  if(already || location.hash === "#hireme"){ unlock(false); }
+  else { setTimeout(function(){ input.focus(); }, 50); }
+
+  form.addEventListener("submit", function(e){
     e.preventDefault();
-    const val = input.value.trim().toLowerCase();
-    if (val === CODE) {
-      try { sessionStorage.setItem('fk-unlocked', 'true'); } catch(e) {}
-      unlock();
-    } else {
-      error.classList.add('show');
-      input.focus();
-      input.select();
-    }
+    if(input.value.trim().toLowerCase() === CODE){ unlock(true); }
+    else { err.textContent = "That's not it. Check the first page of my CV."; input.select(); }
+  });
+  document.getElementById("hint").addEventListener("click", function(){
+    input.value = CODE; input.focus(); err.textContent = "";
   });
 
-  input.addEventListener('input', function() {
-    error.classList.remove('show');
-  });
-
-  function unlock() {
-    gate.classList.add('hidden');
-    site.classList.add('visible');
-  }
-
-  // Hamburger menu
-  const navToggle = document.getElementById('nav-toggle');
-  const navLinks = document.getElementById('nav-links');
-  const navOverlay = document.getElementById('nav-overlay');
-
-  function closeMenu() {
-    navToggle.classList.remove('open');
-    navLinks.classList.remove('open');
-    navOverlay.classList.remove('open');
-    navToggle.setAttribute('aria-expanded', 'false');
-  }
-
-  function toggleMenu() {
-    const isOpen = navLinks.classList.toggle('open');
-    navToggle.classList.toggle('open', isOpen);
-    navOverlay.classList.toggle('open', isOpen);
-    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  }
-
-  navToggle.addEventListener('click', toggleMenu);
-  navOverlay.addEventListener('click', closeMenu);
-  navLinks.querySelectorAll('a').forEach(function(link) {
-    link.addEventListener('click', closeMenu);
-  });
+  var nav = document.getElementById("nav");
+  window.addEventListener("scroll", function(){ nav.classList.toggle("scrolled", window.scrollY > 8); }, {passive:true});
+})();
 </script>
-
 </body>
 </html>
